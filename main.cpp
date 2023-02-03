@@ -10,6 +10,11 @@ public:
     std::map<std::string, std::vector <std::string>> phoneBook_name;
     std::map<std::string, std::string> phoneBook_phone;
 
+    void input(){
+        std::cin.sync();
+        std::getline(std::cin,command);
+    }
+
     void add(){
         std::cout<<"If you want add new contact input 'n'. If you want add phone number to existing contact input 'e'"
         <<std::endl;
@@ -19,18 +24,17 @@ public:
             std::string oneNumber;
             std::vector<std::string> numbers;
             std::cout<<"Please input contact's name:"<<std::endl;
-            std::cin.sync();
-            std::getline(std::cin,command);
+            input();
             std::cout<<"Please input contact's number:"<<std::endl;
             std::cin>>oneNumber;
-            numbers.resize(1);
+            numbers.resize(0);
             numbers.push_back(oneNumber);
             phoneBook_phone.insert(std::pair<std::string, std::string>(oneNumber, command));
             phoneBook_name.insert(std::pair<std::string, std::vector <std::string>>(command, numbers));
 
         }else if(command=="e"){
             std::cout<<"Please input contact's name:"<<std::endl;
-            std::cin>>command;
+            input();
             auto searchNumber = phoneBook_name.find(command);
 
             if (searchNumber==phoneBook_name.end()) {
@@ -39,11 +43,30 @@ public:
                 std::cout << "Input number to add" << std::endl;
                 std::cin >> command;
                 searchNumber->second.push_back(command);
+                phoneBook_phone.insert(std::pair<std::string, std::string>(command, searchNumber->first));
             }
         }
     }
     void call(){
-
+        std::cout<<"Please input contact's name or number for call:"<<std::endl;
+        input();
+        char *input = &command[0];
+        if(input[0]=='+' && input[1]=='7'){
+            std::cout<<"CALL: "<< command << std::endl;
+        }else{
+            auto searchNumber = phoneBook_name.find(command);
+            if(searchNumber->second.size()>1){
+                int row;
+                for (int i = 0; i<searchNumber->second.size(); i++) {
+                    std::cout << i + 1 << ". " << searchNumber->second[i] << std::endl;
+                }
+                std::cout<<"Please choose contact's number. Input number's number in the row."<<std::endl;
+                std::cin >> row;
+                std::cout<<"CALL: "<< searchNumber->second[row-1] << std::endl;
+            }else{
+                std::cout<<"CALL: "<< searchNumber->second[0] << std::endl;
+            }
+        }
     }
     void sms(){
 
@@ -53,13 +76,23 @@ public:
 int main(){
 
     Phone myPhone;
-    int i=0;
 
-    while(i<5){
-        myPhone.add();
-        i++;
+    while(myPhone.command!="e"){
+        std::cout<<"If you want add new contact input 'add'. For call input 'call'. For sms input 'sms'. For exit - 'e'"
+            <<std::endl;
+        std::cin>>myPhone.command;
+        if(myPhone.command=="add"){
+            myPhone.add();
+        }else if(myPhone.command=="call"){
+            myPhone.call();
+        }else if(myPhone.command=="sms"){
+            myPhone.sms();
+        }
     }
 
+
+
+    /*
     for (auto it=myPhone.phoneBook_name.begin(); it!=myPhone.phoneBook_name.end(); it++){
 
         std::cout << it->first << std::endl;
@@ -75,6 +108,7 @@ int main(){
         std::cout << at->first << " " << at->second << std::endl;
 
     }
+    */
 
     return 0;
 
