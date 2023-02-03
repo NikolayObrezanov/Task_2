@@ -14,7 +14,22 @@ public:
         std::cin.sync();
         std::getline(std::cin,command);
     }
-
+    void chooseNumber(std::string phrase){
+        auto searchNumber = phoneBook_name.find(command);
+        if(searchNumber==phoneBook_name.end()){
+            std::cout<<"Contact wasn't find."<<std::endl;
+        }else if(searchNumber->second.size()>1){
+            int row;
+            for (int i = 0; i<searchNumber->second.size(); i++) {
+                std::cout << i + 1 << ". " << searchNumber->second[i] << std::endl;
+            }
+            std::cout<<"Please choose contact's number. Input number's number in the row."<<std::endl;
+            std::cin >> row;
+            std::cout<< phrase << searchNumber->second[row-1] << std::endl;
+        }else{
+            std::cout<< phrase << searchNumber->second[0] << std::endl;
+        }
+    }
     void add(){
         std::cout<<"If you want add new contact input 'n'. If you want add phone number to existing contact input 'e'"
         <<std::endl;
@@ -50,26 +65,26 @@ public:
     void call(){
         std::cout<<"Please input contact's name or number for call:"<<std::endl;
         input();
-        char *input = &command[0];
-        if(input[0]=='+' && input[1]=='7'){
+        char *check = &command[0];
+        if(check[0]=='+' && check[1]=='7'){
             std::cout<<"CALL: "<< command << std::endl;
-        }else{
-            auto searchNumber = phoneBook_name.find(command);
-            if(searchNumber->second.size()>1){
-                int row;
-                for (int i = 0; i<searchNumber->second.size(); i++) {
-                    std::cout << i + 1 << ". " << searchNumber->second[i] << std::endl;
-                }
-                std::cout<<"Please choose contact's number. Input number's number in the row."<<std::endl;
-                std::cin >> row;
-                std::cout<<"CALL: "<< searchNumber->second[row-1] << std::endl;
-            }else{
-                std::cout<<"CALL: "<< searchNumber->second[0] << std::endl;
-            }
+        }else {
+            chooseNumber("CALL: ");
         }
     }
     void sms(){
-
+        std::cout<<"Please input contact's name or number for sms:"<<std::endl;
+        input();
+        char *check = &command[0];
+        if(check[0]=='+' && check[1]=='7'){
+            std::cout<<"Please input SMS to number: "<< command << std::endl;
+            input();
+            std::cout<<"SMS sent!" << std::endl;
+        }else {
+            chooseNumber("Please input SMS to number: ");
+            input();
+            std::cout<<"SMS sent!" << std::endl;
+        }
     }
 };
 
@@ -89,26 +104,6 @@ int main(){
             myPhone.sms();
         }
     }
-
-
-
-    /*
-    for (auto it=myPhone.phoneBook_name.begin(); it!=myPhone.phoneBook_name.end(); it++){
-
-        std::cout << it->first << std::endl;
-
-        for(int i = 0; i<it->second.size();i++){
-            std::cout << it->second[i] << std::endl;
-        }
-
-    }
-
-    for (auto at=myPhone.phoneBook_phone.begin(); at!=myPhone.phoneBook_phone.end(); at++){
-
-        std::cout << at->first << " " << at->second << std::endl;
-
-    }
-    */
 
     return 0;
 
